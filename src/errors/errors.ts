@@ -8,4 +8,5 @@ export const errors = {
     code: 'USER_IS_NOT_EXIST',
   },
   INVALID_CREDO: { message: 'Invalid credo', code: 'INVALID_CREDO' },
+  ACCESS_DENIED: { message: 'Access denied', code: 'ACCESS_DENIED' },
 };
