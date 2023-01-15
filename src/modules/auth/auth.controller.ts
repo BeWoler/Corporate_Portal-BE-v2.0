@@ -6,14 +6,15 @@ import {
   Post,
   Req,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { AuthGuard } from '@nestjs/passport';
 import { Tokens } from 'src/types/tokens.type';
 import { GetUserResponseDto } from '../user/dtos/getUser.response.dto';
 import { AuthService } from './auth.service';
-import { Request } from 'express';
-import { AuthDto } from './dtos/auth.dto';
+import { Request, Response } from 'express';
+import { AuthSignInDto, AuthSignUpDto } from './dtos/auth.dto';
 import { IncomingHttpHeaders } from 'http';
 
 @Controller('auth')
@@ -22,14 +23,36 @@ export class AuthController {
 
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
-  async signup(@Body() body: AuthDto): Promise<Tokens & GetUserResponseDto> {
-    return this.authService.signup(body);
+  async signup(
+    @Body() body: AuthSignUpDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<Tokens & GetUserResponseDto> {
+    const userData = await this.authService.signup(body);
+    res.cookie('rtToken', userData.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return userData;
   }
 
   @Post('/signin')
   @HttpCode(HttpStatus.OK)
-  async signin(@Body() body: AuthDto): Promise<Tokens & GetUserResponseDto> {
-    return this.authService.signin(body);
+  async signin(
+    @Body() body: AuthSignInDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<Tokens & GetUserResponseDto> {
+    const userData = await this.authService.signin(body);
+    res.cookie('rtToken', userData.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    return userData;
   }
 
   @UseGuards(AuthGuard('jwt'))

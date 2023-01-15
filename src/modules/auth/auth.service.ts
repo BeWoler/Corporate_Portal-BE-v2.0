@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt/dist';
 import { Model, Types } from 'mongoose';
 import { Token, TokenDocument } from 'src/schemas/token.schema';
 import { Tokens } from 'src/types/tokens.type';
-import { AuthDto } from './dtos/auth.dto';
+import { AuthSignInDto, AuthSignUpDto } from './dtos/auth.dto';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { hashData } from 'src/helpers/hashData';
 import { errors } from 'src/errors/errors';
@@ -19,7 +19,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(body: AuthDto): Promise<Tokens & GetUserResponseDto> {
+  async signup(body: AuthSignUpDto): Promise<Tokens & GetUserResponseDto> {
     const hash = await hashData(body.password);
     const validEmail = await this.userModel.findOne({ email: body.email });
     const validUsername = await this.userModel.findOne({
@@ -45,10 +45,9 @@ export class AuthService {
     return { user, ...tokens };
   }
 
-  async signin(body: AuthDto): Promise<Tokens & GetUserResponseDto> {
+  async signin(body: AuthSignInDto): Promise<Tokens & GetUserResponseDto> {
     const user = await this.userModel.findOne({
       email: body.email,
-      username: body.username,
     });
 
     if (!user) {
