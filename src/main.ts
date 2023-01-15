@@ -1,6 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
-import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -10,7 +10,7 @@ async function bootstrap() {
 
   app.use(cookieParser());
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://cportal-eight.vercel.app'],
+    origin: [process.env.CLIENT_LOCAL_URL, process.env.CLIENT_PROD_URL],
     credentials: true,
   });
 
