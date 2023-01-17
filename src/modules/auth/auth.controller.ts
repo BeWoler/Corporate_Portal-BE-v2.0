@@ -30,7 +30,7 @@ export class AuthController {
     const userData = await this.authService.signup(body);
     res.cookie('rtToken', userData.refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: Boolean(process.env.SECURE_COOKIES),
       sameSite: 'none',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -47,7 +47,7 @@ export class AuthController {
     const userData = await this.authService.signin(body);
     res.cookie('rtToken', userData.refreshToken, {
       httpOnly: true,
-      secure: true,
+      secure: Boolean(process.env.SECURE_COOKIES),
       sameSite: 'none',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,

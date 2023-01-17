@@ -11,16 +11,16 @@ export class Post {
   @Prop()
   text: string;
 
-  @Prop()
+  @Prop({ default: null })
   media: string;
 
-  @Prop()
-  date: string;
+  @Prop({ default: new Date() })
+  date: number;
 
-  @Prop({ ref: 'Comment' })
+  @Prop({ ref: 'Comment', default: [] })
   comments: Array<string>;
 
-  @Prop({ ref: 'Like' })
+  @Prop({ ref: 'Like', default: [] })
   likes: Array<string>;
 }
 
