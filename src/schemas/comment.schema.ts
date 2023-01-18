@@ -5,6 +5,9 @@ export type CommentDocument = HydratedDocument<Comment>;
 
 @Schema()
 export class Comment {
+  @Prop({ ref: 'Post', required: true })
+  postId: string;
+
   @Prop({ ref: 'User', required: true })
   author: string;
 
@@ -14,8 +17,8 @@ export class Comment {
   @Prop()
   media: string;
 
-  @Prop()
-  date: string;
+  @Prop({ default: new Date() })
+  date: number;
 
   @Prop()
   likes: Array<string>;

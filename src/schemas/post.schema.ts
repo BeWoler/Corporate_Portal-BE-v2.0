@@ -20,7 +20,7 @@ export class Post {
   @Prop({ ref: 'Comment', default: [] })
   comments: Array<string>;
 
-  @Prop({ ref: 'Like', default: [] })
+  @Prop({ default: [] })
   likes: Array<string>;
 }
 

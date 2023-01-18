@@ -52,4 +52,17 @@ export class PostService {
     const posts = await this.postModel.find().populate(populateQuery).lean();
     return { posts };
   }
+
+  async likePost(postId: string, userId: string): Promise<GetPostResponseDto> {
+    const post = await this.postModel.findOne({ _id: postId });
+    if (post.likes.includes(userId)) {
+      const userIndex = post.likes.indexOf(userId, 0);
+      post.likes.splice(userIndex, 1);
+      post.save();
+      return { post };
+    }
+
+    post.likes.push(userId);
+    return { post };
+  }
 }
