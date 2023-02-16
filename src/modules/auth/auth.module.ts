@@ -6,6 +6,7 @@ import { User, UserSchema } from 'src/schemas/user.schema';
 import { AtStrategy } from 'src/strategies/at.strategy';
 import { RtStrategy } from 'src/strategies/rt.strategy';
 import { AuthController } from './auth.controller';
+import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
 
 @Module({
@@ -15,7 +16,6 @@ import { AuthService } from './auth.service';
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AtStrategy, RtStrategy],
-  exports: [AuthService],
+  providers: [AuthService, AtStrategy, RtStrategy, AuthRepository],
 })
 export class AuthModule {}

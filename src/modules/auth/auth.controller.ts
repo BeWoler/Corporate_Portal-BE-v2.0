@@ -16,12 +16,17 @@ import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 import { AuthSignInDto, AuthSignUpDto } from './dtos/auth.dto';
 import { IncomingHttpHeaders } from 'http';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { authSwagger } from './auth.swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/signup')
+  @ApiOperation(authSwagger.SIGN_UP.descr)
+  @ApiResponse(authSwagger.SIGN_UP.res)
   @HttpCode(HttpStatus.CREATED)
   async signup(
     @Body() body: AuthSignUpDto,
@@ -39,6 +44,8 @@ export class AuthController {
   }
 
   @Post('/signin')
+  @ApiOperation(authSwagger.SIGN_IN.descr)
+  @ApiResponse(authSwagger.SIGN_IN.res)
   @HttpCode(HttpStatus.OK)
   async signin(
     @Body() body: AuthSignInDto,
@@ -57,6 +64,8 @@ export class AuthController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post('/logout')
+  @ApiOperation(authSwagger.LOG_OUT.descr)
+  @ApiResponse(authSwagger.LOG_OUT.res)
   @HttpCode(HttpStatus.OK)
   async logout(@Req() req: Request): Promise<boolean> {
     const user = req.user;
@@ -65,6 +74,8 @@ export class AuthController {
 
   @UseGuards(AuthGuard('jwt-refresh'))
   @Post('/refresh')
+  @ApiOperation(authSwagger.REFRESH.descr)
+  @ApiResponse(authSwagger.REFRESH.res)
   @HttpCode(HttpStatus.OK)
   async refresh(
     @Req() req: Request,
