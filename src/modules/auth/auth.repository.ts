@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { errors } from 'src/errors/errors';
@@ -15,6 +16,7 @@ export class AuthRepository {
   constructor(
     @InjectModel(Token.name) private tokenModel: Model<TokenDocument>,
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private jwtService: JwtService,
   ) {}
 
   async insertUserAndTokens(
@@ -41,7 +43,7 @@ export class AuthRepository {
 
     user.password = await hashData('troll');
 
-    const tokens = await this.selectTokens(user.id, user.email, user.username);
+    const tokens = await this.selectTokens(user._id, user.email, user.username);
     return { user, ...tokens };
   }
 
@@ -104,9 +106,34 @@ export class AuthRepository {
 
   async selectTokens(
     userId: string | Types.ObjectId,
-    rt: string,
-    at: string,
+    email: string,
+    username: string,
   ): Promise<Tokens> {
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username,
+          email,
+        },
+        {
+          secret: process.env.AT_SECRET,
+          expiresIn: 60 * 15,
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: userId,
+          username,
+          email,
+        },
+        {
+          secret: process.env.RT_SECRET,
+          expiresIn: 60 * 60 * 24 * 7,
+        },
+      ),
+    ]);
+
     await this.tokenModel.findOneAndDelete({
       user: userId,
     });

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt/dist';
 import { Types } from 'mongoose';
 import { Tokens } from 'src/types/tokens.type';
 import { AuthSignInDto, AuthSignUpDto } from './dtos/auth.dto';
@@ -8,10 +7,7 @@ import { AuthRepository } from './auth.repository';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private authRepository: AuthRepository,
-    private jwtService: JwtService,
-  ) {}
+  constructor(private authRepository: AuthRepository) {}
 
   async signup(body: AuthSignUpDto): Promise<Tokens & GetUserResponseDto> {
     return await this.authRepository.insertUserAndTokens(body);
@@ -34,32 +30,7 @@ export class AuthService {
     email: string,
     username: string,
   ) {
-    const [at, rt] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          sub: userId,
-          username,
-          email,
-        },
-        {
-          secret: process.env.AT_SECRET,
-          expiresIn: 60 * 15,
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          sub: userId,
-          username,
-          email,
-        },
-        {
-          secret: process.env.RT_SECRET,
-          expiresIn: 60 * 60 * 24 * 7,
-        },
-      ),
-    ]);
-
-    return await this.authRepository.selectTokens(userId, rt, at);
+    return await this.authRepository.selectTokens(userId, email, username);
   }
 
   async updateRtHash(userId: string | Types.ObjectId, rt: string) {

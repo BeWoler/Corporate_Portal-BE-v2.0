@@ -13,6 +13,5 @@ export class PostRequestDto {
   text: string;
 
   @ApiProperty({ example: 'https://anyapp/somepics.png' })
-  @IsString()
-  media: string;
+  media: Express.Multer.File | string;
 }
