@@ -5,6 +5,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CommentModule } from './modules/comment/comment.module';
 import { PostModule } from './modules/post/post.module';
 import { UserModule } from './modules/user/user.module';
+import { UserDataModule } from './modules/userData/userData.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserModule } from './modules/user/user.module';
     }),
     MongooseModule.forRoot(process.env.DB_URL),
     UserModule,
+    UserDataModule,
     AuthModule,
     PostModule,
     CommentModule,

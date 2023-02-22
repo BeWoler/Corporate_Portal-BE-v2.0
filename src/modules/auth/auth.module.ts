@@ -5,6 +5,7 @@ import { Token, TokenSchema } from 'src/schemas/token.schema';
 import { User, UserSchema } from 'src/schemas/user.schema';
 import { AtStrategy } from 'src/strategies/at.strategy';
 import { RtStrategy } from 'src/strategies/rt.strategy';
+import { UserDataModule } from '../userData/userData.module';
 import { AuthController } from './auth.controller';
 import { AuthRepository } from './auth.repository';
 import { AuthService } from './auth.service';
@@ -13,6 +14,7 @@ import { AuthService } from './auth.service';
   imports: [
     MongooseModule.forFeature([{ name: Token.name, schema: TokenSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    UserDataModule,
     JwtModule.register({}),
   ],
   controllers: [AuthController],

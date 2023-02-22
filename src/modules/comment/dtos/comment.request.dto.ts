@@ -16,7 +16,8 @@ export class CommentRequestDto {
   @IsString()
   text: string;
 
-  @ApiProperty({ example: 'https://anylink/file.png' })
-  @IsString()
-  media: string;
+  @ApiProperty({
+    example: ['https://anylink/file.png', 'https://anylink/file.png'],
+  })
+  media: Array<string>;
 }

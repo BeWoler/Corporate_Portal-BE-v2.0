@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { GetUserResponseDto } from 'src/modules/user/dtos/getUser.response.dto';
+import { GetUserDataResponseDto } from 'src/modules/userData/dtos/getUserData.response.dto';
 
 export class AuthResponseDto {
   @ApiProperty({
@@ -22,4 +23,16 @@ export class AuthResponseDto {
     },
   })
   user: GetUserResponseDto;
+
+  @ApiProperty({
+    example: {
+      userId: '634gfd54fdec9',
+      city: null,
+      avatar: null,
+      summary: null,
+      linkedin: null,
+      telegram: null,
+    },
+  })
+  userData: GetUserDataResponseDto;
 }

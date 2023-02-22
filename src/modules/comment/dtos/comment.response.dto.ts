@@ -14,8 +14,10 @@ export class CommentResponseDto {
   @ApiProperty({ example: 'any text' })
   text: string;
 
-  @ApiProperty({ example: 'https://anylink/file.png' })
-  media: string;
+  @ApiProperty({
+    example: ['https://anylink/file.png', 'https://anylink/file.png'],
+  })
+  media: Array<string>;
 
   @ApiProperty({ example: '167797856' })
   date: number;

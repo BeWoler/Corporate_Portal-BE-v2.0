@@ -14,8 +14,8 @@ export class Comment {
   @Prop({ required: true })
   text: string;
 
-  @Prop()
-  media: string;
+  @Prop({ default: [] })
+  media: Array<string>;
 
   @Prop({ default: new Date() })
   date: number;

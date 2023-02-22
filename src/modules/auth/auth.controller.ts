@@ -18,11 +18,15 @@ import { AuthSignInDto, AuthSignUpDto } from './dtos/auth.dto';
 import { IncomingHttpHeaders } from 'http';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { authSwagger } from './auth.swagger';
+import { UserDataService } from '../userData/userData.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userDataService: UserDataService,
+  ) {}
 
   @Post('/signup')
   @ApiOperation(authSwagger.SIGN_UP.descr)
@@ -32,15 +36,16 @@ export class AuthController {
     @Body() body: AuthSignUpDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<Tokens & GetUserResponseDto> {
-    const userData = await this.authService.signup(body);
-    res.cookie('rtToken', userData.refreshToken, {
+    const user = await this.authService.signup(body);
+    res.cookie('rtToken', user.refreshToken, {
       httpOnly: true,
       secure: Boolean(process.env.SECURE_COOKIES),
       sameSite: 'none',
       path: '/',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-    return userData;
+    await this.userDataService.createUserData(user.user._id);
+    return user;
   }
 
   @Post('/signin')
